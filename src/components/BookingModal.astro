@@ -2,10 +2,17 @@
 import type { Locale } from '../data/services';
 import { t } from '../i18n/translations';
 import { CONTACT, telHref, zaloHref } from '../data/contact';
+import { servicesByGroup, tx } from '../data/services';
 
 interface Props { lang: Locale }
 const { lang } = Astro.props;
 const zaloMsg = t(lang, 'modal.zalo.message');
+
+// Get popular services for quick selection
+const herbalServices = servicesByGroup('herbal_spa');
+const nailServices = servicesByGroup('nail_services');
+const popularHerbal = herbalServices.filter(s => s.tag === 'popular' || s.tag === 'best').slice(0, 3);
+const popularNail = nailServices.filter(s => s.tag === 'popular' || s.tag === 'best').slice(0, 3);
 ---
 <dialog id="booking-modal" class="booking-modal" aria-labelledby="booking-modal-title">
   <form method="dialog" class="booking-card">
@@ -14,15 +21,58 @@ const zaloMsg = t(lang, 'modal.zalo.message');
     <h3 id="booking-modal-title">{t(lang, 'modal.title')}</h3>
     <p class="modal-lead">{t(lang, 'modal.lead')}</p>
 
+    <!-- Service Selection (optional) -->
+    <div class="service-selection" id="service-selection" style="display: none;">
+      <h4 class="service-section-title">
+        {lang === 'vi' ? 'Dịch vụ bạn quan tâm:' : 'Service of interest:'}
+      </h4>
+      
+      <div class="service-tabs">
+        <button type="button" class="service-tab active" data-tab="herbal">
+          🌿 {lang === 'vi' ? 'Dưỡng Sinh' : 'Wellness'}
+        </button>
+        <button type="button" class="service-tab" data-tab="nail">
+          💅 {lang === 'vi' ? 'Nail Studio' : 'Nail Care'}
+        </button>
+      </div>
+
+      <div class="service-options">
+        <div class="service-group active" data-group="herbal">
+          {popularHerbal.map(service => (
+            <label class="service-option">
+              <input type="radio" name="selectedService" value={service.id} />
+              <span class="service-option-content">
+                <strong>{tx(service.name, lang)}</strong>
+                <span class="service-price">{service.price}k</span>
+              </span>
+            </label>
+          ))}
+        </div>
+        
+        <div class="service-group" data-group="nail">
+          {popularNail.map(service => (
+            <label class="service-option">
+              <input type="radio" name="selectedService" value={service.id} />
+              <span class="service-option-content">
+                <strong>{tx(service.name, lang)}</strong>
+                <span class="service-price">{service.price}k</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Methods -->
     <div class="modal-actions">
-      <a class="modal-action modal-call" href={telHref()}>
+      <a class="modal-action modal-call" href={telHref()} data-contact="phone">
         <span class="modal-action-icon" aria-hidden="true">📞</span>
         <span class="modal-action-main">
           <strong>{t(lang, 'cta.call')}</strong>
           <span>{CONTACT.phoneDisplay}</span>
         </span>
       </a>
-      <a class="modal-action modal-zalo" href={zaloHref(zaloMsg)} target="_blank" rel="noopener">
+      <a class="modal-action modal-zalo" href={zaloHref(zaloMsg)} target="_blank" rel="noopener" data-contact="zalo">
         <span class="modal-action-icon" aria-hidden="true">💬</span>
         <span class="modal-action-main">
           <strong>{t(lang, 'cta.zalo')}</strong>
@@ -31,7 +81,34 @@ const zaloMsg = t(lang, 'modal.zalo.message');
       </a>
     </div>
 
-    <p class="modal-note" id="booking-context"></p>
+    <!-- Branch Selection -->
+    <div class="branch-selection">
+      <h4 class="service-section-title">
+        {lang === 'vi' ? 'Chọn chi nhánh:' : 'Select branch:'}
+      </h4>
+      <div class="branch-options">
+        <label class="branch-option">
+          <input type="radio" name="selectedBranch" value="thong-nhat" checked />
+          <span class="branch-option-content">
+            <strong>🏢 Thống Nhất</strong>
+            <span class="branch-address">{CONTACT.address}</span>
+          </span>
+        </label>
+        <label class="branch-option">
+          <input type="radio" name="selectedBranch" value="phan-van-tri" />
+          <span class="branch-option-content">
+            <strong>🏢 Phan Văn Trị</strong>
+            <span class="branch-address">{CONTACT.addressSecondary}</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <p class="modal-note" id="booking-context">
+      {lang === 'vi' 
+        ? 'Chúng tôi sẽ liên hệ xác nhận lịch hẹn trong vòng 5 phút.' 
+        : 'We will contact you to confirm your appointment within 5 minutes.'}
+    </p>
   </form>
 </dialog>
 
@@ -85,6 +162,63 @@ const zaloMsg = t(lang, 'modal.zalo.message');
   .modal-action-main span { font-size: 0.85rem; color: var(--color-text-muted); }
 
   .modal-note { margin: var(--space-4) 0 0; font-size: 0.85rem; color: var(--color-text-muted); text-align: center; min-height: 1.2em; }
+
+  /* Service Selection */
+  .service-selection { margin: var(--space-4) 0; }
+  .service-section-title { 
+    font-size: 0.9rem; font-weight: 600; 
+    margin-bottom: var(--space-3); color: var(--color-primary);
+  }
+  
+  .service-tabs { display: flex; gap: 4px; margin-bottom: var(--space-3); }
+  .service-tab {
+    flex: 1; padding: 8px 12px; border: 1px solid var(--color-border);
+    background: var(--color-bg); border-radius: var(--radius-sm);
+    font-size: 0.85rem; cursor: pointer; transition: all var(--dur) var(--ease);
+  }
+  .service-tab:hover { background: var(--color-bg-soft); }
+  .service-tab.active { 
+    background: var(--color-primary); color: white; 
+    border-color: var(--color-primary);
+  }
+
+  .service-options { min-height: 120px; }
+  .service-group { display: none; flex-direction: column; gap: var(--space-2); }
+  .service-group.active { display: flex; }
+
+  .service-option {
+    display: flex; align-items: center; cursor: pointer;
+    padding: 8px 12px; border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm); transition: all var(--dur) var(--ease);
+  }
+  .service-option:hover { background: var(--color-bg-soft); }
+  .service-option input { margin-right: 10px; }
+  .service-option-content { 
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; font-size: 0.85rem;
+  }
+  .service-price { color: var(--color-accent); font-weight: 500; }
+  .service-option input:checked + .service-option-content { color: var(--color-primary); }
+
+  /* Branch Selection */
+  .branch-selection { margin: var(--space-4) 0; }
+  .branch-options { display: flex; flex-direction: column; gap: var(--space-2); }
+  .branch-option {
+    display: flex; align-items: flex-start; cursor: pointer;
+    padding: 10px 12px; border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm); transition: all var(--dur) var(--ease);
+  }
+  .branch-option:hover { background: var(--color-bg-soft); }
+  .branch-option input { margin-right: 10px; margin-top: 2px; }
+  .branch-option-content { display: flex; flex-direction: column; gap: 2px; }
+  .branch-address { font-size: 0.8rem; color: var(--color-text-muted); }
+  .branch-option input:checked + .branch-option-content { color: var(--color-primary); }
+
+  @media (max-width: 480px) {
+    .booking-modal { width: calc(100% - 16px); }
+    .booking-card { padding: var(--space-5); }
+    .service-tabs { flex-direction: column; }
+  }
 </style>
 
 <script>
@@ -93,20 +227,142 @@ const zaloMsg = t(lang, 'modal.zalo.message');
 
   function openModal(serviceId?: string) {
     if (!dlg) return;
-    if (ctx) ctx.textContent = serviceId ? `Service: ${serviceId}` : '';
+    
+    // Show service selection if no specific service
+    const serviceSelection = document.getElementById('service-selection');
+    if (serviceSelection) {
+      serviceSelection.style.display = serviceId ? 'none' : 'block';
+    }
+    
+    // Pre-select service if specified
+    if (serviceId) {
+      const serviceRadio = document.querySelector(`input[value="${serviceId}"]`) as HTMLInputElement;
+      if (serviceRadio) {
+        serviceRadio.checked = true;
+        updateContactLinks();
+      }
+    }
+    
     if (typeof dlg.showModal === 'function') dlg.showModal(); else (dlg as any).setAttribute('open', '');
+    
+    // Focus management for accessibility
+    const firstFocusable = dlg.querySelector('button, input, a') as HTMLElement;
+    firstFocusable?.focus();
   }
 
+  // Service tab switching
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
+    
+    // Handle booking trigger
     const trigger = target.closest<HTMLElement>('[data-open-booking]');
-    if (!trigger) return;
-    e.preventDefault();
-    openModal(trigger.dataset.service);
+    if (trigger) {
+      e.preventDefault();
+      openModal(trigger.dataset.service);
+      
+      // Track modal opening
+      import('../lib/analytics.js').then(({ trackBookingStart }) => {
+        trackBookingStart('modal', trigger.dataset.service);
+      }).catch(console.error);
+      
+      return;
+    }
+    
+    // Handle service tab switching
+    const serviceTab = target.closest<HTMLElement>('.service-tab');
+    if (serviceTab) {
+      const tabName = serviceTab.dataset.tab;
+      
+      // Switch active tab
+      document.querySelectorAll('.service-tab').forEach(tab => tab.classList.remove('active'));
+      serviceTab.classList.add('active');
+      
+      // Switch active service group
+      document.querySelectorAll('.service-group').forEach(group => group.classList.remove('active'));
+      const targetGroup = document.querySelector(`[data-group="${tabName}"]`);
+      targetGroup?.classList.add('active');
+      
+      return;
+    }
+  });
+
+  // Update contact links with selected service and branch info
+  function updateContactLinks() {
+    const selectedService = document.querySelector('input[name="selectedService"]:checked') as HTMLInputElement;
+    const selectedBranch = document.querySelector('input[name="selectedBranch"]:checked') as HTMLInputElement;
+    
+    let message = 'Xin chào! Tôi muốn đặt lịch';
+    
+    if (selectedService) {
+      const serviceName = selectedService.closest('.service-option')?.querySelector('strong')?.textContent;
+      if (serviceName) message += ` ${serviceName}`;
+    }
+    
+    if (selectedBranch) {
+      const branchName = selectedBranch.value === 'thong-nhat' ? 'chi nhánh Thống Nhất' : 'chi nhánh Phan Văn Trị';
+      message += ` tại ${branchName}`;
+    }
+    
+    message += ' HuongMinri. Cảm ơn!';
+    
+    // Update Zalo link
+    const zaloLink = document.querySelector('[data-contact="zalo"]') as HTMLAnchorElement;
+    if (zaloLink) {
+      const phone = '${CONTACT.zalo}';
+      zaloLink.href = `https://zalo.me/${phone}?body=${encodeURIComponent(message)}`;
+    }
+  }
+
+  // Listen for service/branch changes
+  document.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target.name === 'selectedService' || target.name === 'selectedBranch') {
+      updateContactLinks();
+    }
+  });
+
+  // Enhanced contact tracking
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const contactLink = target.closest<HTMLElement>('[data-contact]');
+    if (contactLink) {
+      const method = contactLink.dataset.contact;
+      const selectedService = (document.querySelector('input[name="selectedService"]:checked') as HTMLInputElement)?.value;
+      
+      import('../lib/analytics.js').then(({ trackPhoneCall, trackZaloContact }) => {
+        if (method === 'phone') {
+          trackPhoneCall(selectedService || 'modal');
+        } else if (method === 'zalo') {
+          trackZaloContact(selectedService || 'modal');
+        }
+      }).catch(console.error);
+    }
   });
 
   // Close on backdrop click
   dlg?.addEventListener('click', (e) => {
     if (e.target === dlg) dlg.close();
+  });
+
+  // Keyboard accessibility
+  dlg?.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      dlg.close();
+    }
+    
+    // Trap focus within modal
+    if (e.key === 'Tab') {
+      const focusables = dlg.querySelectorAll('button, input, a');
+      const first = focusables[0] as HTMLElement;
+      const last = focusables[focusables.length - 1] as HTMLElement;
+      
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
   });
 </script>

@@ -58,7 +58,7 @@ const badgeFor = (s: Service): { cls: string; label: string } | null => {
             const badge = badgeFor(s);
             const tagClass = `rec-card${s.tag ? ` rec-${s.tag}` : ''}`;
             return (
-              <article class={tagClass}>
+              <article class={tagClass} data-service-id={s.id}>
                 {badge && <span class={`badge ${badge.cls} rec-badge`}>{badge.label}</span>}
                 <h4 class="rec-name">{tx(s.name, lang)}</h4>
                 {s.duration && <span class="rec-duration">{s.duration}</span>}
@@ -89,7 +89,7 @@ const badgeFor = (s: Service): { cls: string; label: string } | null => {
                 {items.map((s) => {
                   const badge = badgeFor(s);
                   return (
-                    <li class="service-row">
+                    <li class="service-row" data-service-id={s.id}>
                       <div class="service-row-main">
                         <div class="service-row-head">
                           <span class="service-row-name">{tx(s.name, lang)}</span>
@@ -127,7 +127,7 @@ const badgeFor = (s: Service): { cls: string; label: string } | null => {
                 {items.map((s) => {
                   const badge = badgeFor(s);
                   return (
-                    <article class={`nail-card${s.tag ? ` nail-${s.tag}` : ''}`}>
+                    <article class={`nail-card${s.tag ? ` nail-${s.tag}` : ''}`} data-service-id={s.id}>
                       <div class="nail-thumb" aria-hidden="true">
                         <span class="nail-tip"></span>
                       </div>
@@ -384,4 +384,49 @@ const badgeFor = (s: Service): { cls: string; label: string } | null => {
   };
   activateFromHash();
   window.addEventListener('hashchange', activateFromHash);
+
+  // Analytics tracking for tab switches and service interactions
+  let currentTab = 'herbal_spa';
+  
+  // Track tab switches
+  tabs.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const newTab = btn.dataset.tab;
+      if (newTab && newTab !== currentTab) {
+        // Dynamic import for analytics
+        import('../lib/analytics.js').then(({ trackTabSwitch }) => {
+          trackTabSwitch(currentTab, newTab);
+          currentTab = newTab;
+        }).catch(console.error);
+      }
+    });
+  });
+
+  // Track service card views (when they come into viewport)
+  const observeServiceCards = () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const card = entry.target as HTMLElement;
+          const serviceId = card.dataset.serviceId;
+          const serviceGroup = card.closest('[data-panel]')?.getAttribute('data-panel') as 'herbal_spa' | 'nail_services';
+          
+          if (serviceId && serviceGroup) {
+            import('../lib/analytics.js').then(({ trackServiceView }) => {
+              trackServiceView(serviceId, serviceGroup);
+            }).catch(console.error);
+            observer.unobserve(card); // Only track once per session
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    // Observe all service cards
+    document.querySelectorAll('.rec-card, .service-row, .nail-card').forEach((card) => {
+      observer.observe(card);
+    });
+  };
+
+  // Initialize service card observation
+  setTimeout(observeServiceCards, 1000);
 </script>

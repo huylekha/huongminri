@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import SocialShare from '../../../components/SocialShare.astro';
+import { LOCALES, LOCALE_LABEL, t } from '../../../i18n/translations';
+import { CONTACT } from '../../../data/contact';
+import type { GetStaticPaths } from 'astro';
+import type { Locale } from '../../../data/services';
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return LOCALES.map(lang => ({ params: { lang } }));
+};
+
+const { lang } = Astro.params as { lang: Locale };
+
+const title = lang === 'vi' 
+  ? 'HuongMinri Chi nhánh Phan Văn Trị - Spa Dưỡng sinh & Nail Studio'
+  : 'HuongMinri Phan Van Tri Branch - Korean Spa & Nail Studio';
+
+const description = lang === 'vi'
+  ? 'Chi nhánh Phan Văn Trị 1183 - Trải nghiệm spa Hàn Quốc đẳng cấp với dịch vụ gội đầu thảo mộc dưỡng sinh và nail art chuyên nghiệp tại Gò Vấp.'
+  : 'Phan Van Tri 1183 Branch - Premium Korean spa experience with herbal hair treatments and professional nail art in Go Vap district.';
+
+const breadcrumbItems = [
+  { name: t(lang, 'nav.locations') || 'Locations', url: `/${lang}/locations/` },
+  { name: 'Phan Văn Trị' },
+];
+---
+
+<BaseLayout title={title} description={description} lang={lang}>
+  <Header lang={lang} />
+  
+  <main class="location-page">
+    <div class="container">
+      <Breadcrumb lang={lang} items={breadcrumbItems} />
+      
+      <header class="location-header">
+        <h1 class="location-title">
+          {lang === 'vi' ? 'Chi nhánh Phan Văn Trị' : 'Phan Van Tri Branch'}
+        </h1>
+        <p class="location-subtitle">
+          {lang === 'vi' 
+            ? 'Spa dưỡng sinh & Nail studio đẳng cấp Hàn Quốc' 
+            : 'Korean Premium Wellness Spa & Nail Studio'
+          }
+        </p>
+      </header>
+
+      <div class="location-content">
+        <section class="location-info">
+          <div class="info-card">
+            <h2>
+              {lang === 'vi' ? 'Thông tin chi nhánh' : 'Branch Information'}
+            </h2>
+            
+            <div class="info-grid">
+              <div class="info-item">
+                <h3>📍 {lang === 'vi' ? 'Địa chỉ' : 'Address'}</h3>
+                <p>{CONTACT.addressSecondary}</p>
+                <a href={CONTACT.mapLink2} target="_blank" rel="noopener" class="map-link">
+                  {lang === 'vi' ? 'Xem trên Google Maps' : 'View on Google Maps'}
+                </a>
+              </div>
+
+              <div class="info-item">
+                <h3>📞 {lang === 'vi' ? 'Liên hệ' : 'Contact'}</h3>
+                <p>
+                  <a href={`tel:${CONTACT.phone}`}>{CONTACT.phoneDisplay}</a><br>
+                  <a href={`https://zalo.me/${CONTACT.zalo}`} target="_blank" rel="noopener">Zalo: {CONTACT.phoneDisplay}</a>
+                </p>
+              </div>
+
+              <div class="info-item">
+                <h3>🕒 {lang === 'vi' ? 'Giờ hoạt động' : 'Opening Hours'}</h3>
+                <p>
+                  {lang === 'vi' ? 'Thứ 2 - Chủ nhật' : 'Monday - Sunday'}<br>
+                  9:00 - 21:00
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="location-services">
+          <h2>{lang === 'vi' ? 'Dịch vụ tại chi nhánh này' : 'Services at this Branch'}</h2>
+          
+          <div class="services-grid">
+            <div class="service-highlight">
+              <h3>🌿 {lang === 'vi' ? 'Dưỡng Sinh' : 'Wellness Spa'}</h3>
+              <ul>
+                <li>{lang === 'vi' ? 'Gội đầu thảo mộc dưỡng sinh' : 'Herbal hair treatment'}</li>
+                <li>{lang === 'vi' ? 'Massage thư giãn' : 'Relaxation massage'}</li>
+                <li>{lang === 'vi' ? 'Combo phục hồi tóc' : 'Hair recovery combo'}</li>
+                <li>{lang === 'vi' ? 'Liệu pháp VIP' : 'VIP therapy'}</li>
+              </ul>
+            </div>
+
+            <div class="service-highlight">
+              <h3>💅 {lang === 'vi' ? 'Nail Studio' : 'Nail Services'}</h3>
+              <ul>
+                <li>{lang === 'vi' ? 'Sơn gel cao cấp' : 'Premium gel polish'}</li>
+                <li>{lang === 'vi' ? 'Nail art Hàn Quốc' : 'Korean nail art'}</li>
+                <li>{lang === 'vi' ? 'Đắp gel extension' : 'Gel extension'}</li>
+                <li>{lang === 'vi' ? 'Chăm sóc chân VIP' : 'VIP foot care'}</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="location-booking">
+          <div class="booking-card">
+            <h2>{lang === 'vi' ? 'Đặt lịch ngay' : 'Book Now'}</h2>
+            <p>
+              {lang === 'vi' 
+                ? 'Liên hệ trực tiếp để đặt lịch hẹn tại chi nhánh Phan Văn Trị'
+                : 'Contact us directly to book an appointment at Phan Van Tri branch'
+              }
+            </p>
+            <div class="booking-buttons">
+              <a href={`tel:${CONTACT.phone}`} class="btn btn-primary">
+                📞 {lang === 'vi' ? 'Gọi ngay' : 'Call Now'}
+              </a>
+              <a href={`https://zalo.me/${CONTACT.zalo}`} target="_blank" rel="noopener" class="btn btn-accent">
+                💬 Zalo
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section class="location-share">
+          <h3>{lang === 'vi' ? 'Chia sẻ chi nhánh' : 'Share Branch'}</h3>
+          <SocialShare lang={lang} title={title} description={description} />
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+</BaseLayout>
+
+<style>
+  .location-page { padding: var(--space-6) 0; }
+  
+  .location-header { text-align: center; margin-bottom: var(--space-8); }
+  .location-title { 
+    font-size: 2.5rem; font-weight: 700; color: var(--color-primary);
+    margin-bottom: var(--space-3);
+  }
+  .location-subtitle { 
+    font-size: 1.2rem; color: var(--color-text-soft);
+    max-width: 600px; margin: 0 auto;
+  }
+
+  .location-content { display: grid; gap: var(--space-8); }
+
+  .info-card, .booking-card { 
+    background: var(--color-bg); padding: var(--space-6);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
+  }
+  
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-6); margin-top: var(--space-4); }
+  .info-item h3 { color: var(--color-primary); margin-bottom: var(--space-2); }
+  .info-item p { color: var(--color-text-soft); }
+  .map-link { 
+    color: var(--color-accent); text-decoration: none; font-weight: 500;
+    transition: color var(--dur) var(--ease);
+  }
+  .map-link:hover { color: var(--color-accent-dark); }
+
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6); margin-top: var(--space-4); }
+  .service-highlight { 
+    background: linear-gradient(135deg, var(--color-primary-soft) 0%, var(--color-accent-soft) 100%);
+    padding: var(--space-5); border-radius: var(--radius-md);
+  }
+  .service-highlight h3 { color: var(--color-primary-dark); margin-bottom: var(--space-3); }
+  .service-highlight ul { list-style: none; padding: 0; }
+  .service-highlight li { 
+    padding: var(--space-1) 0; color: var(--color-text-soft);
+    position: relative; padding-left: var(--space-4);
+  }
+  .service-highlight li::before { 
+    content: '✨'; position: absolute; left: 0; color: var(--color-accent);
+  }
+
+  .booking-card { text-align: center; }
+  .booking-buttons { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; margin-top: var(--space-4); }
+
+  .location-share { margin-top: var(--space-6); }
+  .location-share h3 { margin-bottom: var(--space-3); color: var(--color-primary); }
+
+  @media (max-width: 768px) {
+    .location-title { font-size: 2rem; }
+    .info-grid, .services-grid { grid-template-columns: 1fr; }
+    .booking-buttons { flex-direction: column; align-items: center; }
+  }
+</style>

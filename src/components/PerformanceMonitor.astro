@@ -1,0 +1,203 @@
+---
+// Performance monitoring component for Core Web Vitals
+---
+
+<script>
+  import { analytics } from '../lib/analytics.js';
+
+  // Core Web Vitals monitoring
+  function observeWebVitals() {
+    // Only run in browser
+    if (typeof window === 'undefined') return;
+
+    // Track Core Web Vitals
+    import('web-vitals').then(({ onLCP, onINP, onCLS, onFCP, onTTFB }) => {
+      
+      // Largest Contentful Paint
+      onLCP((metric) => {
+        reportWebVital('LCP', metric);
+      });
+
+      // Interaction to Next Paint (replaces FID)
+      onINP((metric) => {
+        reportWebVital('INP', metric);
+      });
+
+      // Cumulative Layout Shift
+      onCLS((metric) => {
+        reportWebVital('CLS', metric);
+      });
+
+      // First Contentful Paint
+      onFCP((metric) => {
+        reportWebVital('FCP', metric);
+      });
+
+      // Time to First Byte
+      onTTFB((metric) => {
+        reportWebVital('TTFB', metric);
+      });
+
+    }).catch((error) => {
+      console.warn('Web Vitals not available:', error);
+      
+      // Fallback manual measurements
+      measurePerformanceFallback();
+    });
+  }
+
+  // Report metrics to Google Analytics
+  function reportWebVital(name: string, metric: any) {
+    if (window.gtag) {
+      window.gtag('event', name, {
+        event_category: 'Web Vitals',
+        value: Math.round(name === 'CLS' ? metric.value * 1000 : metric.value),
+        event_label: metric.id,
+        non_interaction: true,
+      });
+
+      console.log(`📊 ${name}:`, metric.value, getVitalRating(name, metric.value));
+    }
+  }
+
+  // Get performance rating
+  function getVitalRating(metric: string, value: number): string {
+    const thresholds = {
+      LCP: { good: 2500, poor: 4000 },
+      INP: { good: 200, poor: 500 },
+      CLS: { good: 0.1, poor: 0.25 },
+      FCP: { good: 1800, poor: 3000 },
+      TTFB: { good: 800, poor: 1800 },
+    };
+
+    const threshold = thresholds[metric as keyof typeof thresholds];
+    if (!threshold) return 'unknown';
+
+    if (value <= threshold.good) return 'good';
+    if (value <= threshold.poor) return 'needs-improvement';
+    return 'poor';
+  }
+
+  // Fallback performance measurements
+  function measurePerformanceFallback() {
+    // Use Performance Observer API if available
+    if ('PerformanceObserver' in window) {
+      // Measure paint metrics
+      const paintObserver = new PerformanceObserver((list) => {
+        list.getEntries().forEach((entry) => {
+          if (entry.name === 'first-contentful-paint') {
+            reportWebVital('FCP', { value: entry.startTime, id: 'fallback-fcp' });
+          }
+        });
+      });
+      
+      try {
+        paintObserver.observe({ entryTypes: ['paint'] });
+      } catch (e) {
+        console.warn('Paint observer not supported');
+      }
+
+      // Measure layout shifts
+      const layoutObserver = new PerformanceObserver((list) => {
+        let clsValue = 0;
+        list.getEntries().forEach((entry: any) => {
+          if (!entry.hadRecentInput) {
+            clsValue += entry.value;
+          }
+        });
+        if (clsValue > 0) {
+          reportWebVital('CLS', { value: clsValue, id: 'fallback-cls' });
+        }
+      });
+
+      try {
+        layoutObserver.observe({ entryTypes: ['layout-shift'] });
+      } catch (e) {
+        console.warn('Layout shift observer not supported');
+      }
+    }
+
+    // Basic timing measurements
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        
+        if (navigation) {
+          // Time to First Byte
+          const ttfb = navigation.responseStart - navigation.requestStart;
+          reportWebVital('TTFB', { value: ttfb, id: 'fallback-ttfb' });
+
+          // Dom Content Loaded
+          const dcl = navigation.domContentLoadedEventEnd - navigation.navigationStart;
+          if (window.gtag) {
+            window.gtag('event', 'DCL', {
+              event_category: 'Performance',
+              value: Math.round(dcl),
+              non_interaction: true,
+            });
+          }
+        }
+      }, 100);
+    });
+  }
+
+  // Track user engagement
+  function trackUserEngagement() {
+    let startTime = Date.now();
+    let isEngaged = false;
+
+    // Track scroll engagement
+    const handleScroll = () => {
+      if (!isEngaged) {
+        isEngaged = true;
+        const timeToEngage = Date.now() - startTime;
+        
+        if (window.gtag) {
+          window.gtag('event', 'scroll_engagement', {
+            event_category: 'User Engagement',
+            value: Math.round(timeToEngage),
+            non_interaction: false,
+          });
+        }
+      }
+    };
+
+    // Track click engagement
+    const handleClick = () => {
+      if (!isEngaged) {
+        isEngaged = true;
+        const timeToEngage = Date.now() - startTime;
+        
+        if (window.gtag) {
+          window.gtag('event', 'click_engagement', {
+            event_category: 'User Engagement',
+            value: Math.round(timeToEngage),
+            non_interaction: false,
+          });
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { once: true, passive: true });
+    window.addEventListener('click', handleClick, { once: true });
+
+    // Track session duration on page unload
+    window.addEventListener('beforeunload', () => {
+      const sessionDuration = Date.now() - startTime;
+      
+      if (window.gtag && sessionDuration > 1000) { // Only track if > 1 second
+        window.gtag('event', 'session_duration', {
+          event_category: 'User Engagement',
+          value: Math.round(sessionDuration),
+          non_interaction: true,
+        });
+      }
+    });
+  }
+
+  // Initialize monitoring when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    observeWebVitals();
+    trackUserEngagement();
+  });
+</script>

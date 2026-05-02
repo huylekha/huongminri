@@ -1,0 +1,82 @@
+---
+import type { Locale } from '../data/services';
+import { t } from '../i18n/translations';
+
+interface BreadcrumbItem {
+  name: string;
+  url?: string;
+}
+
+interface Props {
+  lang: Locale;
+  items: BreadcrumbItem[];
+}
+
+const { lang, items } = Astro.props;
+
+// Always include home as first item
+const breadcrumbItems = [
+  { name: 'HuongMinri', url: `/${lang}/` },
+  ...items,
+];
+
+// Schema.org BreadcrumbList
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': breadcrumbItems.map((item, index) => ({
+    '@type': 'ListItem',
+    'position': index + 1,
+    'name': item.name,
+    ...(item.url ? { 'item': `https://huongminri.com${item.url}` } : {}),
+  })),
+};
+---
+
+{breadcrumbItems.length > 1 && (
+  <nav class="breadcrumb" aria-label="Breadcrumb navigation">
+    <ol class="breadcrumb-list">
+      {breadcrumbItems.map((item, index) => {
+        const isLast = index === breadcrumbItems.length - 1;
+        return (
+          <li class="breadcrumb-item">
+            {!isLast && item.url ? (
+              <a href={item.url} class="breadcrumb-link">{item.name}</a>
+            ) : (
+              <span class="breadcrumb-current" aria-current="page">{item.name}</span>
+            )}
+            {!isLast && (
+              <span class="breadcrumb-separator" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </span>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </nav>
+)}
+
+<style>
+  .breadcrumb { margin: var(--space-3) 0; }
+  .breadcrumb-list { 
+    display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-1);
+    list-style: none; margin: 0; padding: 0;
+    font-size: 0.85rem;
+  }
+  .breadcrumb-item { display: flex; align-items: center; gap: var(--space-1); }
+  .breadcrumb-link { 
+    color: var(--color-text-soft); 
+    text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+  .breadcrumb-link:hover { color: var(--color-primary); }
+  .breadcrumb-current { color: var(--color-text); font-weight: 500; }
+  .breadcrumb-separator { 
+    color: var(--color-text-muted); 
+    display: inline-flex; align-items: center;
+  }
+</style>

@@ -23,39 +23,173 @@ const canonical = localePath(lang);
 
 const schema = {
   '@context': 'https://schema.org',
-  '@type': 'BeautySalon',
+  '@type': ['BeautySalon', 'LocalBusiness', 'HealthAndBeautyBusiness'],
   '@id': `${site}/#salon`,
   name: 'HuongMinri Spa',
+  alternateName: 'HuongMinri - Spa Dưỡng Sinh & Nail Studio',
   description: pageDesc,
   url: site,
   telephone: CONTACT.phone,
-  image: `${site}${CONTACT.ogImage}`,
+  image: [
+    `${site}${CONTACT.ogImage}`,
+    `${site}/logo.svg`,
+  ],
+  logo: `${site}/logo.svg`,
   priceRange: '$$',
+  currenciesAccepted: 'VND',
+  paymentAccepted: ['Cash', 'Credit Card', 'Mobile Payment'],
+  
+  // Enhanced address information
   address: [
     {
       '@type': 'PostalAddress',
+      '@id': `${site}/#address1`,
       streetAddress: CONTACT.address,
-      addressLocality: CONTACT.addressLocality,
-      addressCountry: CONTACT.region,
+      addressLocality: 'Gò Vấp',
+      addressRegion: 'Hồ Chí Minh',
+      addressCountry: 'VN',
+      postalCode: '70000',
     },
     {
-      '@type': 'PostalAddress',
+      '@type': 'PostalAddress', 
+      '@id': `${site}/#address2`,
       streetAddress: CONTACT.addressSecondary,
-      addressLocality: CONTACT.addressLocality,
-      addressCountry: CONTACT.region,
+      addressLocality: 'Gò Vấp',
+      addressRegion: 'Hồ Chí Minh',
+      addressCountry: 'VN',
+      postalCode: '70000',
     }
   ],
+  
+  // Geographic coordinates (approximate for Gò Vấp)
+  geo: [
+    {
+      '@type': 'GeoCoordinates',
+      latitude: 10.8452,
+      longitude: 106.6648,
+      address: CONTACT.address
+    },
+    {
+      '@type': 'GeoCoordinates', 
+      latitude: 10.8327,
+      longitude: 106.6721,
+      address: CONTACT.addressSecondary
+    }
+  ],
+  
+  // Enhanced opening hours
   openingHoursSpecification: [
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: '09:00', closes: '21:00' },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+      opens: '09:00',
+      closes: '21:00',
+      validFrom: '2024-01-01',
+      validThrough: '2026-12-31'
+    },
   ],
-  sameAs: [`https://zalo.me/${CONTACT.zalo}`],
-  makesOffer: [
-    { '@type': 'Offer', name: 'Herbal Wellness Wash', priceCurrency: 'VND', price: '179000' },
-    { '@type': 'Offer', name: 'Hair Growth Wellness Combo', priceCurrency: 'VND', price: '279000' },
-    { '@type': 'Offer', name: 'VIP Total Wellness', priceCurrency: 'VND', price: '549000' },
-    { '@type': 'Offer', name: 'Cat-Eye Gel Polish', priceCurrency: 'VND', price: '150000' },
-    { '@type': 'Offer', name: 'VIP Foot Therapy', priceCurrency: 'VND', price: '350000' },
+  
+  // Social media presence
+  sameAs: [
+    `https://zalo.me/${CONTACT.zalo}`,
+    CONTACT.social.facebook,
+    CONTACT.social.instagram,
+    CONTACT.social.tiktok,
+    CONTACT.social.youtube,
   ],
+  
+  // Service areas
+  areaServed: [
+    {
+      '@type': 'City',
+      name: 'Hồ Chí Minh',
+      sameAs: 'https://en.wikipedia.org/wiki/Ho_Chi_Minh_City'
+    },
+    {
+      '@type': 'AdministrativeArea',
+      name: 'Gò Vấp District',
+    }
+  ],
+  
+  // Enhanced service offerings
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'HuongMinri Services',
+    itemListElement: [
+      {
+        '@type': 'OfferCatalog',
+        name: 'Herbal Spa Services',
+        itemListElement: [
+          { 
+            '@type': 'Offer', 
+            name: 'Herbal Hair Wash', 
+            description: 'Natural herbal hair treatment with relaxation massage',
+            priceCurrency: 'VND', 
+            price: '179000',
+            category: 'Hair Care',
+            availability: 'https://schema.org/InStock'
+          },
+          { 
+            '@type': 'Offer', 
+            name: 'Hair Growth Wellness Combo', 
+            description: 'Complete hair growth treatment with herbal therapy',
+            priceCurrency: 'VND', 
+            price: '279000',
+            category: 'Hair Treatment',
+            availability: 'https://schema.org/InStock'
+          },
+          { 
+            '@type': 'Offer', 
+            name: 'VIP Total Wellness', 
+            description: '90-minute premium wellness experience',
+            priceCurrency: 'VND', 
+            price: '549000',
+            category: 'Premium Spa',
+            availability: 'https://schema.org/InStock'
+          },
+        ]
+      },
+      {
+        '@type': 'OfferCatalog',
+        name: 'Nail Services',
+        itemListElement: [
+          { 
+            '@type': 'Offer', 
+            name: 'Cat-Eye Gel Polish', 
+            description: 'Korean-style premium gel nail polish with cat-eye effect',
+            priceCurrency: 'VND', 
+            price: '150000',
+            category: 'Nail Care',
+            availability: 'https://schema.org/InStock'
+          },
+          { 
+            '@type': 'Offer', 
+            name: 'VIP Foot Therapy', 
+            description: 'Complete foot care and therapy treatment',
+            priceCurrency: 'VND', 
+            price: '350000',
+            category: 'Foot Care',
+            availability: 'https://schema.org/InStock'
+          },
+        ]
+      }
+    ]
+  },
+  
+  // Business attributes
+  amenityFeature: [
+    { '@type': 'LocationFeatureSpecification', name: 'WiFi', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Air Conditioning', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Parking Available', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Wheelchair Accessible', value: true },
+  ],
+  
+  // Languages spoken
+  knowsLanguage: ['vi', 'en'],
+  
+  // Business type keywords
+  keywords: 'spa, nail salon, herbal treatment, hair wash, massage, beauty salon, korean spa, nail art, foot care, wellness center, go vap, ho chi minh city',
+  
 };
 ---
 <!doctype html>
@@ -69,6 +203,19 @@ const schema = {
     <title>{pageTitle}</title>
     <meta name="description" content={pageDesc} />
     <link rel="canonical" href={canonical} />
+    
+    <!-- Performance optimizations -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@400;700&display=swap" />
+    </noscript>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />
+    <link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX" as="script" />
 
     <!-- hreflang for all locales -->
     {LOCALES.map((l) => (
@@ -93,6 +240,16 @@ const schema = {
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDesc} />
     <meta name="twitter:image" content={`${site}${CONTACT.ogImage}`} />
+    <meta name="twitter:site" content="@huongminrispa" />
+    
+    <!-- Instagram (via Open Graph) -->
+    <meta property="instagram:title" content={pageTitle} />
+    <meta property="instagram:description" content={pageDesc} />
+    
+    <!-- WhatsApp -->
+    <meta property="whatsapp:title" content={pageTitle} />
+    <meta property="whatsapp:description" content={pageDesc} />
+    <meta property="whatsapp:image" content={`${site}${CONTACT.ogImage}`} />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -105,8 +262,127 @@ const schema = {
 
     <!-- Schema.org -->
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX', {
+        // Enhanced measurement settings
+        enhanced_measurements: {
+          scrolls: true,
+          outbound_clicks: true,
+          site_search: false,
+          video_engagement: false,
+          file_downloads: false,
+        },
+        // Custom dimensions for HuongMinri
+        custom_map: {
+          custom_parameter_1: 'service_group',
+          custom_parameter_2: 'contact_method',
+        }
+      });
+    </script>
+
+    <!-- Analytics initialization -->
+    <script>
+      import { analytics } from '../lib/analytics';
+      
+      // Initialize analytics when DOM is ready
+      document.addEventListener('DOMContentLoaded', () => {
+        analytics.init();
+        
+        // Track initial page view
+        analytics.trackPageView(window.location.pathname, document.title);
+      });
+    </script>
   </head>
   <body>
     <slot />
+    
+    <!-- Performance monitoring -->
+    <script>
+      // Core Web Vitals monitoring (inline for performance)
+      (function() {
+        'use strict';
+        
+        // Basic performance metrics tracking
+        function reportMetric(name, value, rating = 'unknown') {
+          if (window.gtag) {
+            window.gtag('event', name, {
+              event_category: 'Web Vitals',
+              value: Math.round(name === 'CLS' ? value * 1000 : value),
+              event_label: rating,
+              non_interaction: true,
+            });
+          }
+        }
+        
+        // Try to load web-vitals library
+        if ('PerformanceObserver' in window) {
+          // Load web-vitals dynamically to avoid blocking
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/web-vitals@3/dist/web-vitals.iife.js';
+          script.onload = function() {
+            if (window.webVitals) {
+              window.webVitals.onLCP(metric => reportMetric('LCP', metric.value, getVitalRating('LCP', metric.value)));
+              window.webVitals.onINP(metric => reportMetric('INP', metric.value, getVitalRating('INP', metric.value)));
+              window.webVitals.onCLS(metric => reportMetric('CLS', metric.value, getVitalRating('CLS', metric.value)));
+              window.webVitals.onFCP(metric => reportMetric('FCP', metric.value, getVitalRating('FCP', metric.value)));
+            }
+          };
+          document.head.appendChild(script);
+        }
+        
+        // Performance rating helper
+        function getVitalRating(metric, value) {
+          const thresholds = {
+            LCP: { good: 2500, poor: 4000 },
+            INP: { good: 200, poor: 500 },
+            CLS: { good: 0.1, poor: 0.25 },
+            FCP: { good: 1800, poor: 3000 },
+          };
+          
+          const threshold = thresholds[metric];
+          if (!threshold) return 'unknown';
+          
+          if (value <= threshold.good) return 'good';
+          if (value <= threshold.poor) return 'needs-improvement';
+          return 'poor';
+        }
+        
+        // Track Time to Interactive (approximation)
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            if (performance.getEntriesByType) {
+              const navigation = performance.getEntriesByType('navigation')[0];
+              if (navigation) {
+                const tti = navigation.loadEventEnd - navigation.navigationStart;
+                reportMetric('TTI', tti, tti <= 3800 ? 'good' : tti <= 7300 ? 'needs-improvement' : 'poor');
+              }
+            }
+          }, 0);
+          
+          // Register service worker for caching
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+              .then((registration) => {
+                console.log('✅ SW registered:', registration.scope);
+              })
+              .catch((error) => {
+                console.log('❌ SW registration failed:', error);
+              });
+          }
+          
+          // Initialize accessibility enhancements
+          import('../lib/accessibility.js').then(({ AccessibilityManager }) => {
+            AccessibilityManager.init();
+            console.log('♿ Accessibility enhancements loaded');
+          }).catch(console.error);
+        });
+      })();
+    </script>
   </body>
 </html>
