@@ -1,0 +1,41 @@
+---
+/**
+ * Root redirect — detects browser language client-side and redirects to /<lang>/.
+ * Server-side fallback (meta refresh + link) ensures crawlers reach /vi.
+ * SEO-safe: every locale has a real prerendered page; this is a UX redirect only.
+ */
+import { LOCALES, DEFAULT_LOCALE } from '../i18n/translations';
+const localesJson = JSON.stringify(LOCALES);
+---
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HuongMinri Spa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href="https://huongminri.com/vi/" />
+    <meta http-equiv="refresh" content={`0; url=/${DEFAULT_LOCALE}/`} />
+    <style>
+      html, body { margin: 0; height: 100%; background: #F5F5DC; font-family: system-ui, sans-serif; }
+      .wrap { display: flex; align-items: center; justify-content: center; height: 100%; color: #6B8E23; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">HuongMinri…</div>
+    <script is:inline define:vars={{ locales: LOCALES, fallback: DEFAULT_LOCALE }}>
+      try {
+        var nav = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+        var pick = fallback;
+        for (var i = 0; i < nav.length; i++) {
+          var code = (nav[i] || '').toLowerCase().split('-')[0];
+          if (locales.indexOf(code) !== -1) { pick = code; break; }
+        }
+        location.replace('/' + pick + '/');
+      } catch (e) {
+        location.replace('/' + fallback + '/');
+      }
+    </script>
+    <noscript><a href={`/${DEFAULT_LOCALE}/`}>Continue to HuongMinri</a></noscript>
+  </body>
+</html>

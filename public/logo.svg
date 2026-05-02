@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="logoBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7BA428"/>
+      <stop offset="50%" stop-color="#6B8E23"/>
+      <stop offset="100%" stop-color="#556B1B"/>
+    </linearGradient>
+    <linearGradient id="logoLeaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5F5DC"/>
+      <stop offset="70%" stop-color="#E8E4D0"/>
+      <stop offset="100%" stop-color="#D4D0BC"/>
+    </linearGradient>
+    <linearGradient id="logoAccent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E5C97D"/>
+      <stop offset="50%" stop-color="#D4B896"/>
+      <stop offset="100%" stop-color="#C8A27A"/>
+    </linearGradient>
+    <radialGradient id="logoGlow" cx="50%" cy="40%" r="80%">
+      <stop offset="0%" stop-color="#8FA85A" stop-opacity="0.3"/>
+      <stop offset="70%" stop-color="#7BA428" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#556B1B" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="2" dy="4" result="offset"/>
+      <feFlood flood-color="#2B2B26" flood-opacity="0.2"/>
+      <feComposite in2="offset" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#logoBg)" filter="url(#softShadow)"/>
+  <circle cx="100" cy="100" r="90" fill="url(#logoGlow)"/>
+  
+  <!-- Main leaf design -->
+  <g transform="translate(100, 60)">
+    <!-- Central leaf -->
+    <path d="M0 12 C-18 6, -24 24, -12 42 C-6 54, 6 54, 12 42 C24 24, 18 6, 0 12z" 
+          fill="url(#logoLeaf)" opacity="0.95" filter="url(#softShadow)"/>
+    
+    <!-- Leaf veins -->
+    <path d="M0 18 L0 48 M-6 24 L6 36 M6 24 L-6 36 M0 30 L-3 33 M0 30 L3 33" 
+          stroke="#B8A482" stroke-width="1.5" opacity="0.8" stroke-linecap="round"/>
+    
+    <!-- Leaf highlights -->
+    <ellipse cx="-3" cy="20" rx="2" ry="6" fill="#FAFAF0" opacity="0.6"/>
+    <ellipse cx="3" cy="25" rx="1.5" ry="4" fill="#FAFAF0" opacity="0.4"/>
+  </g>
+  
+  <!-- Side leaves -->
+  <g transform="translate(65, 85) rotate(-35)">
+    <path d="M0 6 C-12 3, -15 15, -6 24 C-3 30, 3 30, 6 24 C15 15, 12 3, 0 6z" 
+          fill="url(#logoLeaf)" opacity="0.85"/>
+    <path d="M0 9 L0 21 M-2 12 L2 18" stroke="#B8A482" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
+  </g>
+  
+  <g transform="translate(135, 85) rotate(35)">
+    <path d="M0 6 C-12 3, -15 15, -6 24 C-3 30, 3 30, 6 24 C15 15, 12 3, 0 6z" 
+          fill="url(#logoLeaf)" opacity="0.85"/>
+    <path d="M0 9 L0 21 M-2 12 L2 18" stroke="#B8A482" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Small decorative leaves -->
+  <g transform="translate(75, 65) rotate(-20)">
+    <path d="M0 3 C-6 1.5, -7.5 7.5, -3 12 C-1.5 15, 1.5 15, 3 12 C7.5 7.5, 6 1.5, 0 3z" 
+          fill="url(#logoLeaf)" opacity="0.7"/>
+  </g>
+  <g transform="translate(125, 65) rotate(20)">
+    <path d="M0 3 C-6 1.5, -7.5 7.5, -3 12 C-1.5 15, 1.5 15, 3 12 C7.5 7.5, 6 1.5, 0 3z" 
+          fill="url(#logoLeaf)" opacity="0.7"/>
+  </g>
+  
+  <!-- Elegant nail accent at bottom -->
+  <g transform="translate(100, 140)">
+    <!-- Base -->
+    <ellipse cx="0" cy="0" rx="24" ry="9" fill="url(#logoAccent)" opacity="0.9"/>
+    <!-- Highlight -->
+    <ellipse cx="0" cy="-2" rx="18" ry="6" fill="#FAFAF0" opacity="0.7"/>
+    <!-- Nail tip design -->
+    <ellipse cx="0" cy="-3" rx="12" ry="3" fill="url(#logoAccent)" opacity="0.5"/>
+    <!-- Sparkle on nail -->
+    <circle cx="-6" cy="-2" r="1.5" fill="#FFF" opacity="0.8"/>
+    <circle cx="4" cy="-1" r="1" fill="#FFF" opacity="0.6"/>
+  </g>
+  
+  <!-- Subtle sparkles around the design -->
+  <circle cx="70" cy="45" r="2" fill="#F5F5DC" opacity="0.9"/>
+  <circle cx="140" cy="120" r="1.8" fill="#E8E4D0" opacity="0.8"/>
+  <circle cx="55" cy="155" r="1.5" fill="#D4B896" opacity="0.7"/>
+  <circle cx="150" cy="50" r="1.2" fill="#C8A27A" opacity="0.6"/>
+  <circle cx="45" cy="110" r="1" fill="#E5C97D" opacity="0.5"/>
+  
+  <!-- Tiny accent dots for premium feel -->
+  <circle cx="100" cy="25" r="0.8" fill="#FAFAF0" opacity="0.8"/>
+  <circle cx="85" cy="175" r="0.6" fill="#E8E4D0" opacity="0.6"/>
+  <circle cx="115" cy="175" r="0.6" fill="#E8E4D0" opacity="0.6"/>
+</svg>

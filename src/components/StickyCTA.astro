@@ -1,0 +1,51 @@
+---
+import type { Locale } from '../data/services';
+import { t } from '../i18n/translations';
+import { CONTACT, telHref, zaloHref } from '../data/contact';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const zaloMsg = t(lang, 'modal.zalo.message');
+---
+<div class="sticky-cta" role="region" aria-label="Quick booking">
+  <a class="sticky-btn sticky-call" href={telHref()} aria-label={t(lang, 'sticky.call')}>
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.5.6 3.6.1.4 0 .7-.2 1z"/></svg>
+    <span>{t(lang, 'sticky.call')}</span>
+  </a>
+  <a class="sticky-btn sticky-zalo" href={zaloHref(zaloMsg)} target="_blank" rel="noopener" aria-label="Zalo">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.4 1.4 4.5 3.6 6L4.5 20l3.4-1.6c1.3.4 2.7.6 4.1.6 5.5 0 10-3.6 10-8s-4.5-8-10-8z"/></svg>
+    <span>{t(lang, 'sticky.zalo')}</span>
+  </a>
+  <button type="button" class="sticky-btn sticky-book" data-open-booking aria-label={t(lang, 'sticky.book')}>
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z"/></svg>
+    <span>{t(lang, 'sticky.book')}</span>
+  </button>
+</div>
+
+<style>
+  .sticky-cta {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: grid; grid-template-columns: 1fr 1fr 1.3fr;
+    gap: 8px;
+    padding: 10px max(env(safe-area-inset-right), 12px) calc(10px + env(safe-area-inset-bottom)) max(env(safe-area-inset-left), 12px);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--color-border);
+    z-index: 40;
+    box-shadow: 0 -8px 24px rgba(43,43,38,0.06);
+  }
+  @media (min-width: 760px) { .sticky-cta { display: none; } }
+
+  .sticky-btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    height: 52px; border-radius: var(--radius-pill);
+    font-size: 0.9rem; font-weight: 600;
+    color: #fff; text-decoration: none;
+    transition: transform var(--dur-fast) var(--ease);
+  }
+  .sticky-btn:active { transform: scale(0.97); }
+  .sticky-call { background: var(--color-primary); }
+  .sticky-zalo { background: #2196F3; }
+  .sticky-book { background: var(--color-accent-dark); border: none; cursor: pointer; }
+</style>

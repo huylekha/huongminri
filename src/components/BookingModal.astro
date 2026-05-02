@@ -1,0 +1,112 @@
+---
+import type { Locale } from '../data/services';
+import { t } from '../i18n/translations';
+import { CONTACT, telHref, zaloHref } from '../data/contact';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const zaloMsg = t(lang, 'modal.zalo.message');
+---
+<dialog id="booking-modal" class="booking-modal" aria-labelledby="booking-modal-title">
+  <form method="dialog" class="booking-card">
+    <button type="submit" class="modal-close" aria-label={t(lang, 'modal.close')}>×</button>
+    <span class="section-eyebrow">{t(lang, 'cta.eyebrow')}</span>
+    <h3 id="booking-modal-title">{t(lang, 'modal.title')}</h3>
+    <p class="modal-lead">{t(lang, 'modal.lead')}</p>
+
+    <div class="modal-actions">
+      <a class="modal-action modal-call" href={telHref()}>
+        <span class="modal-action-icon" aria-hidden="true">📞</span>
+        <span class="modal-action-main">
+          <strong>{t(lang, 'cta.call')}</strong>
+          <span>{CONTACT.phoneDisplay}</span>
+        </span>
+      </a>
+      <a class="modal-action modal-zalo" href={zaloHref(zaloMsg)} target="_blank" rel="noopener">
+        <span class="modal-action-icon" aria-hidden="true">💬</span>
+        <span class="modal-action-main">
+          <strong>{t(lang, 'cta.zalo')}</strong>
+          <span>zalo.me/{CONTACT.zalo}</span>
+        </span>
+      </a>
+    </div>
+
+    <p class="modal-note" id="booking-context"></p>
+  </form>
+</dialog>
+
+<style>
+  .booking-modal {
+    width: min(440px, calc(100% - 32px));
+    border: none; border-radius: var(--radius-lg);
+    padding: 0; background: transparent;
+    box-shadow: var(--shadow-lg);
+  }
+  .booking-modal::backdrop { background: rgba(31,40,16,0.55); backdrop-filter: blur(4px); }
+  .booking-modal[open] { animation: fadeUp var(--dur) var(--ease); }
+
+  .booking-card {
+    position: relative;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    margin: 0;
+  }
+  .modal-close {
+    position: absolute; top: 12px; right: 14px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--color-bg); color: var(--color-text);
+    font-size: 1.6rem; line-height: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .modal-close:hover { background: var(--color-border); }
+
+  .modal-lead { margin: var(--space-2) 0 var(--space-5); color: var(--color-text-soft); }
+
+  .modal-actions { display: flex; flex-direction: column; gap: var(--space-3); }
+  .modal-action {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: 16px 20px;
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: transform var(--dur-fast) var(--ease), border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .modal-action:hover { transform: translateY(-2px); }
+  .modal-call:hover { border-color: var(--color-primary); background: #F1F4E5; }
+  .modal-zalo:hover { border-color: #2196F3; background: #EAF5FF; }
+
+  .modal-action-icon { font-size: 1.5rem; }
+  .modal-action-main { display: flex; flex-direction: column; gap: 2px; }
+  .modal-action-main strong { font-size: 1rem; }
+  .modal-action-main span { font-size: 0.85rem; color: var(--color-text-muted); }
+
+  .modal-note { margin: var(--space-4) 0 0; font-size: 0.85rem; color: var(--color-text-muted); text-align: center; min-height: 1.2em; }
+</style>
+
+<script>
+  const dlg = document.getElementById('booking-modal') as HTMLDialogElement | null;
+  const ctx = document.getElementById('booking-context') as HTMLParagraphElement | null;
+
+  function openModal(serviceId?: string) {
+    if (!dlg) return;
+    if (ctx) ctx.textContent = serviceId ? `Service: ${serviceId}` : '';
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else (dlg as any).setAttribute('open', '');
+  }
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const trigger = target.closest<HTMLElement>('[data-open-booking]');
+    if (!trigger) return;
+    e.preventDefault();
+    openModal(trigger.dataset.service);
+  });
+
+  // Close on backdrop click
+  dlg?.addEventListener('click', (e) => {
+    if (e.target === dlg) dlg.close();
+  });
+</script>

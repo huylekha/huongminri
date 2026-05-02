@@ -1,0 +1,63 @@
+---
+import type { Locale } from '../data/services';
+import { t } from '../i18n/translations';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+---
+<section class="section experience" aria-labelledby="experience-title">
+  <div class="container-narrow">
+    <div class="section-title">
+      <span class="section-eyebrow">{t(lang, 'experience.eyebrow')}</span>
+      <h2 id="experience-title">{t(lang, 'experience.title')}</h2>
+    </div>
+
+    <div class="exp-grid">
+      <div class="exp-card exp-before">
+        <span class="exp-tag">{t(lang, 'experience.before.title')}</span>
+        <p>{t(lang, 'experience.before.text')}</p>
+      </div>
+      <div class="exp-arrow" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="40" height="40">
+          <path d="M8 20h24M22 10l10 10-10 10" stroke="#6B8E23" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="exp-card exp-after">
+        <span class="exp-tag exp-tag-after">{t(lang, 'experience.after.title')}</span>
+        <p>{t(lang, 'experience.after.text')}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience { background: linear-gradient(180deg, #fff 0%, var(--color-bg) 100%); }
+  .exp-grid {
+    display: grid; gap: var(--space-4);
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+  @media (min-width: 720px) {
+    .exp-grid { grid-template-columns: 1fr auto 1fr; align-items: center; }
+  }
+  .exp-card {
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: #fff; border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+  }
+  .exp-before { background: linear-gradient(135deg, #fff 0%, #F5F0E8 100%); }
+  .exp-after  { background: linear-gradient(135deg, #FAFAF0 0%, #EDF2DA 100%); }
+
+  .exp-tag {
+    display: inline-block; margin-bottom: var(--space-3);
+    padding: 4px 14px; border-radius: var(--radius-pill);
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--color-bg); color: var(--color-text-muted);
+  }
+  .exp-tag-after { background: var(--color-primary); color: #fff; }
+  .exp-card p { margin: 0; font-size: 1.05rem; color: var(--color-text); }
+
+  .exp-arrow { display: flex; justify-content: center; transform: rotate(90deg); }
+  @media (min-width: 720px) { .exp-arrow { transform: none; } }
+</style>

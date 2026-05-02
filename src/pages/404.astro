@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { DEFAULT_LOCALE } from '../i18n/translations';
+---
+<BaseLayout lang={DEFAULT_LOCALE} title="404 — HuongMinri" description="Trang không tìm thấy.">
+  <main style="min-height:80vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:48px 24px;">
+    <div>
+      <h1 style="font-size:5rem; margin-bottom:16px;">404</h1>
+      <p>Oops — trang không tồn tại.</p>
+      <a class="btn btn-primary" href={`/${DEFAULT_LOCALE}/`}>Về trang chủ</a>
+    </div>
+  </main>
+</BaseLayout>

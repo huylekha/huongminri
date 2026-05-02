@@ -1,0 +1,37 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Hero from '../../components/Hero.astro';
+import ServicesOverview from '../../components/ServicesOverview.astro';
+import Pricing from '../../components/Pricing.astro';
+import Combos from '../../components/Combos.astro';
+import Experience from '../../components/Experience.astro';
+import Reviews from '../../components/Reviews.astro';
+import FinalCTA from '../../components/FinalCTA.astro';
+import StickyCTA from '../../components/StickyCTA.astro';
+import BookingModal from '../../components/BookingModal.astro';
+import Footer from '../../components/Footer.astro';
+import { LOCALES } from '../../i18n/translations';
+import type { Locale } from '../../data/services';
+
+export const getStaticPaths: GetStaticPaths = () =>
+  LOCALES.map((lang) => ({ params: { lang } }));
+
+const { lang } = Astro.params as { lang: Locale };
+---
+<BaseLayout lang={lang} pathname="/">
+  <Header lang={lang} />
+  <main>
+    <Hero lang={lang} />
+    <ServicesOverview lang={lang} />
+    <Pricing lang={lang} />
+    <Combos lang={lang} />
+    <Experience lang={lang} />
+    <Reviews lang={lang} />
+    <FinalCTA lang={lang} />
+  </main>
+  <Footer lang={lang} />
+  <StickyCTA lang={lang} />
+  <BookingModal lang={lang} />
+</BaseLayout>

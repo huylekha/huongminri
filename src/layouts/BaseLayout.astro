@@ -1,0 +1,112 @@
+---
+import '../styles/globals.css';
+import { LOCALES, HREFLANG, t } from '../i18n/translations';
+import type { Locale } from '../data/services';
+import { CONTACT } from '../data/contact';
+
+interface Props {
+  lang: Locale;
+  title?: string;
+  description?: string;
+  pathname?: string; // current path WITHOUT locale prefix, e.g. "/" or "/about"
+}
+
+const { lang, title, description, pathname = '/' } = Astro.props;
+
+const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://huongminri.com';
+
+const pageTitle = title ?? t(lang, 'meta.title');
+const pageDesc = description ?? t(lang, 'meta.description');
+
+const localePath = (l: Locale) => `${site}/${l}${pathname === '/' ? '' : pathname}`;
+const canonical = localePath(lang);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BeautySalon',
+  '@id': `${site}/#salon`,
+  name: 'HuongMinri Spa',
+  description: pageDesc,
+  url: site,
+  telephone: CONTACT.phone,
+  image: `${site}${CONTACT.ogImage}`,
+  priceRange: '$$',
+  address: [
+    {
+      '@type': 'PostalAddress',
+      streetAddress: CONTACT.address,
+      addressLocality: CONTACT.addressLocality,
+      addressCountry: CONTACT.region,
+    },
+    {
+      '@type': 'PostalAddress',
+      streetAddress: CONTACT.addressSecondary,
+      addressLocality: CONTACT.addressLocality,
+      addressCountry: CONTACT.region,
+    }
+  ],
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens: '09:00', closes: '21:00' },
+  ],
+  sameAs: [`https://zalo.me/${CONTACT.zalo}`],
+  makesOffer: [
+    { '@type': 'Offer', name: 'Herbal Wellness Wash', priceCurrency: 'VND', price: '179000' },
+    { '@type': 'Offer', name: 'Hair Growth Wellness Combo', priceCurrency: 'VND', price: '279000' },
+    { '@type': 'Offer', name: 'VIP Total Wellness', priceCurrency: 'VND', price: '549000' },
+    { '@type': 'Offer', name: 'Cat-Eye Gel Polish', priceCurrency: 'VND', price: '150000' },
+    { '@type': 'Offer', name: 'VIP Foot Therapy', priceCurrency: 'VND', price: '350000' },
+  ],
+};
+---
+<!doctype html>
+<html lang={HREFLANG[lang]}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#6B8E23" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDesc} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- hreflang for all locales -->
+    {LOCALES.map((l) => (
+      <link rel="alternate" hreflang={HREFLANG[l]} href={localePath(l)} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={localePath('vi')} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="HuongMinri Spa" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={`${site}${CONTACT.ogImage}`} />
+    <meta property="og:locale" content={HREFLANG[lang].replace('-', '_')} />
+    {LOCALES.filter((l) => l !== lang).map((l) => (
+      <meta property="og:locale:alternate" content={HREFLANG[l].replace('-', '_')} />
+    ))}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDesc} />
+    <meta name="twitter:image" content={`${site}${CONTACT.ogImage}`} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fonts (preconnect + display=swap for performance) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" />
+
+    <!-- Schema.org -->
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="ogBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FAFAF0"/>
+      <stop offset="50%" stop-color="#F5F5DC"/>
+      <stop offset="100%" stop-color="#EDF2DA"/>
+    </linearGradient>
+    <linearGradient id="ogLeaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8FA85A"/>
+      <stop offset="100%" stop-color="#556B1B"/>
+    </linearGradient>
+    <linearGradient id="ogAccent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D4B896"/>
+      <stop offset="100%" stop-color="#C8A27A"/>
+    </linearGradient>
+    <radialGradient id="ogGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#7BA428" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#7BA428" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#ogBg)"/>
+  <circle cx="200" cy="150" r="280" fill="url(#ogGlow)"/>
+  <circle cx="1000" cy="480" r="220" fill="url(#ogGlow)"/>
+  
+  <!-- Decorative leaves background -->
+  <g opacity="0.15">
+    <g transform="translate(80 80) scale(2.5)">
+      <path d="M0 20 C-15 10, -20 30, -10 50 C-5 65, 5 65, 10 50 C20 30, 15 10, 0 20z" fill="url(#ogLeaf)"/>
+      <path d="M0 25 L0 55 M-5 35 L5 45 M5 35 L-5 45" stroke="#A4B86A" stroke-width="2" opacity="0.6"/>
+    </g>
+    <g transform="translate(1020 400) rotate(45) scale(2)">
+      <path d="M0 15 C-12 8, -15 22, -8 38 C-4 48, 4 48, 8 38 C15 22, 12 8, 0 15z" fill="url(#ogAccent)"/>
+    </g>
+  </g>
+  
+  <!-- Logo -->
+  <g transform="translate(120 180)">
+    <rect width="120" height="120" rx="24" fill="url(#ogLeaf)" opacity="0.95"/>
+    
+    <!-- Main leaf in logo -->
+    <g transform="translate(60, 30)">
+      <path d="M0 8 C-12 4, -16 16, -8 28 C-4 36, 4 36, 8 28 C16 16, 12 4, 0 8z" fill="#F5F5DC" opacity="0.95"/>
+      <path d="M0 12 L0 32 M-4 16 L4 24 M4 16 L-4 24" stroke="#D4B896" stroke-width="1.5" opacity="0.8"/>
+    </g>
+    
+    <!-- Side elements -->
+    <g transform="translate(30, 50) rotate(-30)">
+      <path d="M0 4 C-8 2, -10 10, -4 16 C-2 20, 2 20, 4 16 C10 10, 8 2, 0 4z" fill="#F5F5DC" opacity="0.8"/>
+    </g>
+    <g transform="translate(90, 50) rotate(30)">
+      <path d="M0 4 C-8 2, -10 10, -4 16 C-2 20, 2 20, 4 16 C10 10, 8 2, 0 4z" fill="#F5F5DC" opacity="0.8"/>
+    </g>
+    
+    <!-- Nail accent -->
+    <ellipse cx="60" cy="90" rx="16" ry="6" fill="url(#ogAccent)" opacity="0.9"/>
+    <ellipse cx="60" cy="88" rx="12" ry="4" fill="#F5F5DC" opacity="0.7"/>
+    
+    <!-- Sparkles -->
+    <circle cx="40" cy="25" r="2" fill="#F5F5DC" opacity="0.9"/>
+    <circle cx="85" cy="75" r="1.5" fill="#E8E4D0" opacity="0.8"/>
+    <circle cx="25" cy="95" r="1" fill="#D4B896" opacity="0.7"/>
+  </g>
+  
+  <!-- Text content -->
+  <g transform="translate(280 200)">
+    <text x="0" y="0" font-family="Playfair Display, Georgia, serif" font-size="88" font-weight="700" fill="#2B2B26" letter-spacing="-1px">HuongMinri</text>
+    <text x="0" y="55" font-family="Inter, sans-serif" font-size="28" fill="#6B8E23" letter-spacing="4px" font-weight="600">HERBAL SPA • NAIL STUDIO</text>
+    <text x="0" y="140" font-family="Inter, sans-serif" font-size="24" fill="#5C5C52" font-weight="400">Premium Korean-style wellness & artisan nail design</text>
+    <text x="0" y="170" font-family="Inter, sans-serif" font-size="20" fill="#8E8E83">📍 Ho Chi Minh City • ☎ 093 778 78 07</text>
+    
+    <!-- CTA Button -->
+    <g transform="translate(0 220)">
+      <rect width="220" height="56" rx="28" fill="url(#ogLeaf)"/>
+      <rect width="216" height="52" x="2" y="2" rx="26" fill="url(#ogAccent)" opacity="0.1"/>
+      <text x="110" y="38" text-anchor="middle" font-family="Inter, sans-serif" font-size="19" font-weight="600" fill="#fff">Đặt lịch ngay</text>
+    </g>
+  </g>
+</svg>

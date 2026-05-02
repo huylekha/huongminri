@@ -1,0 +1,74 @@
+---
+import type { Locale } from '../data/services';
+import { t } from '../i18n/translations';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+---
+<section id="overview" class="section overview" aria-labelledby="overview-title">
+  <div class="container">
+    <div class="section-title">
+      <span class="section-eyebrow">{t(lang, 'overview.eyebrow')}</span>
+      <h2 id="overview-title">{t(lang, 'overview.title')}</h2>
+      <p>{t(lang, 'overview.lead')}</p>
+    </div>
+
+    <div class="overview-grid">
+      <a href="#pricing-spa" class="overview-card overview-spa" data-funnel="herbal_spa">
+        <div class="overview-icon" aria-hidden="true">
+          <svg viewBox="0 0 80 80" width="56" height="56">
+            <path d="M40 12c-4 14-14 22-26 28 12 6 22 14 26 28 4-14 14-22 26-28-12-6-22-14-26-28z" fill="#6B8E23"/>
+            <path d="M40 28c-2 7-7 11-13 14 6 3 11 7 13 14 2-7 7-11 13-14-6-3-11-7-13-14z" fill="#fff" opacity=".5"/>
+          </svg>
+        </div>
+        <h3>{t(lang, 'overview.spa.title')}</h3>
+        <p>{t(lang, 'overview.spa.text')}</p>
+        <span class="overview-cta">{t(lang, 'overview.spa.cta')} →</span>
+      </a>
+
+      <a href="#pricing-nail" class="overview-card overview-nail" data-funnel="nail_services">
+        <div class="overview-icon" aria-hidden="true">
+          <svg viewBox="0 0 80 80" width="56" height="56">
+            <rect x="30" y="14" width="20" height="46" rx="10" fill="#C8A27A"/>
+            <rect x="32" y="16" width="16" height="22" rx="8" fill="#FFD7B5"/>
+            <circle cx="40" cy="20" r="2.4" fill="#fff" opacity=".7"/>
+          </svg>
+        </div>
+        <h3>{t(lang, 'overview.nail.title')}</h3>
+        <p>{t(lang, 'overview.nail.text')}</p>
+        <span class="overview-cta">{t(lang, 'overview.nail.cta')} →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .overview-grid {
+    display: grid; gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) {
+    .overview-grid { grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+  }
+  .overview-card {
+    position: relative;
+    display: flex; flex-direction: column;
+    padding: var(--space-7) var(--space-6);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    text-decoration: none; color: inherit;
+    overflow: hidden;
+  }
+  .overview-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--color-primary-soft); }
+  .overview-spa { background: linear-gradient(135deg, #FAFAF0 0%, #EDF2DA 100%); }
+  .overview-nail { background: linear-gradient(135deg, #FFF8F2 0%, #F8E9DA 100%); }
+
+  .overview-icon { margin-bottom: var(--space-4); }
+  .overview-card h3 { margin-bottom: var(--space-2); }
+  .overview-card p { margin-bottom: var(--space-4); flex-grow: 1; }
+  .overview-cta { font-weight: 600; color: var(--color-primary); }
+  .overview-nail .overview-cta { color: var(--color-accent-dark); }
+</style>

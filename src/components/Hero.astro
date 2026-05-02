@@ -1,0 +1,106 @@
+---
+import type { Locale } from '../data/services';
+import { t } from '../i18n/translations';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-bg" aria-hidden="true">
+    <!-- SVG hero background — light, fast, no external image required -->
+    <svg class="hero-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" role="presentation">
+      <defs>
+        <linearGradient id="herograd" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3a4d18"/>
+          <stop offset="100%" stop-color="#1f2810"/>
+        </linearGradient>
+        <radialGradient id="herodot" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#8FA85A" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#8FA85A" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1600" height="900" fill="url(#herograd)"/>
+      <circle cx="1200" cy="200" r="380" fill="url(#herodot)"/>
+      <circle cx="300" cy="800" r="320" fill="url(#herodot)"/>
+      <!-- subtle leaves -->
+      <g opacity="0.08" fill="#F5F5DC">
+        <path d="M180 600 C 240 380, 480 380, 540 600 C 480 540, 240 540, 180 600z"/>
+        <path d="M1080 180 C 1140 -40, 1380 -40, 1440 180 C 1380 120, 1140 120, 1080 180z"/>
+      </g>
+    </svg>
+    <div class="hero-overlay"></div>
+  </div>
+
+  <div class="container hero-inner">
+    <span class="hero-eyebrow fade-in">{t(lang, 'hero.eyebrow')}</span>
+    <h1 id="hero-title" class="hero-title fade-up">{t(lang, 'hero.title')}</h1>
+    <p class="hero-subtitle fade-up" style="animation-delay:120ms">{t(lang, 'hero.subtitle')}</p>
+    <p class="hero-tagline fade-up" style="animation-delay:200ms">{t(lang, 'hero.tagline')}</p>
+
+    <div class="hero-cta fade-up" style="animation-delay:280ms">
+      <button type="button" class="btn btn-primary btn-lg" data-open-booking>{t(lang, 'hero.cta.primary')}</button>
+      <a class="btn btn-ghost btn-lg hero-secondary" href="#pricing">{t(lang, 'hero.cta.secondary')}</a>
+    </div>
+
+    <div class="hero-meta fade-in" style="animation-delay:480ms">
+      <span class="hero-meta-item"><span class="dot"></span>5,000+ guests</span>
+      <span class="hero-meta-item"><span class="dot"></span>4.9 ★</span>
+      <span class="hero-meta-item"><span class="dot"></span>Open 9–21h</span>
+    </div>
+  </div>
+
+  <a class="scroll-cue" href="#overview" aria-label="Scroll to services">
+    <span class="cue-line" aria-hidden="true"></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 92vh;
+    display: flex; align-items: center;
+    color: #fff;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero-bg { position: absolute; inset: 0; z-index: -1; }
+  .hero-svg { width: 100%; height: 100%; display: block; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(31,40,16,0.2) 0%, rgba(31,40,16,0.55) 60%, rgba(31,40,16,0.7) 100%); }
+
+  .hero-inner { padding: var(--space-9) var(--space-5); text-align: center; }
+
+  .hero-eyebrow {
+    display: inline-block; padding: 6px 16px; border-radius: var(--radius-pill);
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #F5F5DC;
+  }
+  .hero-title {
+    font-size: clamp(3rem, 9vw, 6rem);
+    line-height: 1.05;
+    margin: var(--space-4) 0 var(--space-3);
+    color: #fff;
+  }
+  .hero-subtitle { font-size: clamp(1.1rem, 2.4vw, 1.5rem); color: #F5F5DC; max-width: 720px; margin: 0 auto var(--space-3); }
+  .hero-tagline { color: rgba(245,245,220,0.78); max-width: 620px; margin: 0 auto var(--space-6); font-style: italic; }
+
+  .hero-cta { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; }
+  .hero-secondary { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.3); }
+  .hero-secondary:hover { color: #fff; background: rgba(255,255,255,0.16); border-color: #fff; }
+
+  .hero-meta { margin-top: var(--space-6); display: inline-flex; gap: var(--space-5); flex-wrap: wrap; justify-content: center; color: rgba(245,245,220,0.75); font-size: 0.88rem; }
+  .hero-meta-item { display: inline-flex; align-items: center; gap: 8px; }
+  .hero-meta-item .dot { width: 6px; height: 6px; background: #C8A27A; border-radius: 50%; }
+
+  .scroll-cue {
+    position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+    width: 28px; height: 44px; border-radius: 14px;
+    border: 1.5px solid rgba(245,245,220,0.5);
+    display: flex; justify-content: center; padding-top: 8px;
+  }
+  .cue-line { display: block; width: 2px; height: 10px; background: #F5F5DC; border-radius: 2px; animation: cue 1.6s var(--ease) infinite; }
+  @keyframes cue {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(14px); opacity: 0; }
+  }
+</style>

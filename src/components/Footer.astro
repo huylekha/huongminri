@@ -1,0 +1,47 @@
+---
+import type { Locale } from '../data/services';
+import { t } from '../i18n/translations';
+import { CONTACT } from '../data/contact';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+---
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <strong>HuongMinri</strong>
+      <div class="footer-addresses">
+        <a href={CONTACT.mapLink1} target="_blank" rel="noopener" class="address-link">
+          📍 {CONTACT.address}
+        </a>
+        <a href={CONTACT.mapLink2} target="_blank" rel="noopener" class="address-link">
+          📍 {CONTACT.addressSecondary}
+        </a>
+      </div>
+    </div>
+    <div class="footer-meta">
+      <a href={`tel:${CONTACT.phone}`}>{CONTACT.phoneDisplay}</a>
+      <span aria-hidden="true">·</span>
+      <a href={`https://zalo.me/${CONTACT.zalo}`} target="_blank" rel="noopener">Zalo</a>
+    </div>
+  </div>
+  <div class="container footer-copy">
+    <small>{t(lang, 'footer.copy')}</small>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: #2B2B26; color: #C8C8B8; padding: var(--space-7) 0 var(--space-5); }
+  .footer-inner { display: flex; flex-wrap: wrap; gap: var(--space-4); justify-content: space-between; align-items: center; padding: 0 var(--space-5); }
+  .footer-brand strong { font-family: var(--font-title); font-size: 1.2rem; color: #fff; margin-bottom: 8px; display: block; }
+  .footer-addresses { display: flex; flex-direction: column; gap: 4px; }
+  .address-link { 
+    font-size: 0.88rem; color: #C8C8B8; text-decoration: none;
+    transition: color var(--dur) var(--ease);
+  }
+  .address-link:hover { color: var(--color-primary-soft); }
+  .footer-meta { display: flex; gap: 12px; align-items: center; }
+  .footer-meta a { color: #F5F5DC; }
+  .footer-meta a:hover { color: var(--color-primary-soft); }
+  .footer-copy { padding: var(--space-4) var(--space-5) 0; opacity: 0.6; font-size: 0.85rem; }
+</style>

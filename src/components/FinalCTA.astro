@@ -1,0 +1,64 @@
+---
+import type { Locale } from '../data/services';
+import { t } from '../i18n/translations';
+import { CONTACT, telHref, zaloHref } from '../data/contact';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+---
+<section id="booking" class="section final-cta" aria-labelledby="final-cta-title">
+  <div class="container-narrow">
+    <div class="cta-card">
+      <span class="section-eyebrow">{t(lang, 'cta.eyebrow')}</span>
+      <h2 id="final-cta-title">{t(lang, 'cta.title')}</h2>
+      <p>{t(lang, 'cta.lead')}</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary btn-lg" href={telHref()}>{t(lang, 'cta.call')}</a>
+        <a class="btn btn-accent btn-lg" href={zaloHref(t(lang, 'modal.zalo.message'))} target="_blank" rel="noopener">{t(lang, 'cta.zalo')}</a>
+        <button type="button" class="btn btn-ghost btn-lg" data-open-booking>{t(lang, 'cta.book')}</button>
+      </div>
+      <p class="cta-phone">{CONTACT.phoneDisplay}</p>
+      
+      <div class="cta-locations">
+        <h3>{t(lang, 'cta.locations.title')}</h3>
+        <div class="location-links">
+          <a href={CONTACT.mapLink1} target="_blank" rel="noopener" class="location-link">
+            📍 {t(lang, 'cta.locations.branch1')}
+          </a>
+          <a href={CONTACT.mapLink2} target="_blank" rel="noopener" class="location-link">
+            📍 {t(lang, 'cta.locations.branch2')}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .final-cta { background: linear-gradient(160deg, #6B8E23 0%, #556B1B 100%); color: #fff; }
+  .final-cta .section-eyebrow { color: rgba(245,245,220,0.85); }
+  .cta-card { text-align: center; padding: var(--space-7) var(--space-5); }
+  .cta-card h2 { color: #fff; }
+  .cta-card p { color: rgba(245,245,220,0.85); max-width: 540px; margin: 0 auto var(--space-5); }
+  .cta-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-5); }
+  .cta-actions .btn-ghost { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .cta-actions .btn-ghost:hover { color: #fff; border-color: #fff; }
+  .cta-phone { font-family: var(--font-title); font-size: 1.4rem; color: #F5F5DC; letter-spacing: 0.05em; margin-bottom: var(--space-5); }
+  
+  .cta-locations { text-align: center; }
+  .cta-locations h3 { color: #F5F5DC; font-size: 1.1rem; margin-bottom: var(--space-3); }
+  .location-links { display: flex; flex-direction: column; gap: var(--space-2); align-items: center; }
+  .location-link {
+    color: rgba(245,245,220,0.85); text-decoration: none;
+    padding: 8px 16px; border-radius: var(--radius-pill);
+    border: 1px solid rgba(245,245,220,0.3);
+    font-size: 0.92rem; transition: all var(--dur) var(--ease);
+  }
+  .location-link:hover { 
+    color: #fff; border-color: rgba(245,245,220,0.6);
+    background: rgba(245,245,220,0.1);
+  }
+  @media (min-width: 640px) {
+    .location-links { flex-direction: row; gap: var(--space-4); }
+  }
+</style>

@@ -1,0 +1,135 @@
+---
+import type { Locale } from '../data/services';
+import { LOCALES, LOCALE_LABEL, LOCALE_FLAG, t } from '../i18n/translations';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={`/${lang}/`} aria-label="HuongMinri home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="32" height="32">
+          <defs>
+            <linearGradient id="headerBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7BA428"/>
+              <stop offset="100%" stop-color="#556B1B"/>
+            </linearGradient>
+            <linearGradient id="headerLeaf" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#F5F5DC"/>
+              <stop offset="70%" stop-color="#E8E4D0"/>
+            </linearGradient>
+          </defs>
+          
+          <rect width="32" height="32" rx="8" fill="url(#headerBg)"/>
+          
+          <!-- Main leaf -->
+          <g transform="translate(16, 10)">
+            <path d="M0 2 C-3 1, -4 4, -2 7 C-1 9, 1 9, 2 7 C4 4, 3 1, 0 2z" fill="url(#headerLeaf)" opacity="0.95"/>
+            <path d="M0 3 L0 8 M-1 4 L1 6 M1 4 L-1 6" stroke="#D4B896" stroke-width="0.4" opacity="0.7"/>
+          </g>
+          
+          <!-- Side leaves -->
+          <g transform="translate(10, 14) rotate(-25)">
+            <path d="M0 1 C-2 0.5, -2.5 2.5, -1 4 C-0.5 5, 0.5 5, 1 4 C2.5 2.5, 2 0.5, 0 1z" fill="url(#headerLeaf)" opacity="0.8"/>
+          </g>
+          <g transform="translate(22, 14) rotate(25)">
+            <path d="M0 1 C-2 0.5, -2.5 2.5, -1 4 C-0.5 5, 0.5 5, 1 4 C2.5 2.5, 2 0.5, 0 1z" fill="url(#headerLeaf)" opacity="0.8"/>
+          </g>
+          
+          <!-- Nail accent -->
+          <ellipse cx="16" cy="23" rx="4" ry="1.5" fill="#C8A27A" opacity="0.9"/>
+          <ellipse cx="16" cy="22.5" rx="3" ry="1" fill="#F5F5DC" opacity="0.6"/>
+          
+          <!-- Sparkle -->
+          <circle cx="12" cy="8" r="0.5" fill="#F5F5DC" opacity="0.8"/>
+          <circle cx="21" cy="19" r="0.4" fill="#E8E4D0" opacity="0.7"/>
+        </svg>
+      </span>
+      <span class="brand-name">HuongMinri</span>
+    </a>
+
+    <nav class="lang-switch" aria-label="Language">
+      <button class="lang-current" type="button" aria-haspopup="true" aria-expanded="false" data-lang-toggle>
+        <span aria-hidden="true">{LOCALE_FLAG[lang]}</span>
+        <span class="lang-label">{LOCALE_LABEL[lang]}</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul class="lang-menu" role="menu" data-lang-menu>
+        {LOCALES.map((l) => (
+          <li role="none">
+            <a role="menuitem" href={`/${l}/`} aria-current={l === lang ? 'page' : undefined}>
+              <span aria-hidden="true">{LOCALE_FLAG[l]}</span>{LOCALE_LABEL[l]}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a class="btn btn-primary btn-sm header-cta" href="#booking">{t(lang, 'nav.book')}</a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(150%) blur(14px);
+    -webkit-backdrop-filter: saturate(150%) blur(14px);
+    background: rgba(245, 245, 220, 0.78);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-4); padding: var(--space-3) var(--space-5);
+  }
+  .brand { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-title); font-size: 1.2rem; font-weight: 600; color: var(--color-text); }
+  .brand-mark { display: inline-flex; }
+
+  .lang-switch { position: relative; }
+  .lang-current {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border); background: #fff;
+    font-size: 0.9rem;
+  }
+  .lang-current:hover { border-color: var(--color-primary); }
+  .lang-label { display: none; }
+  @media (min-width: 540px) { .lang-label { display: inline; } }
+
+  .lang-menu {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    list-style: none; margin: 0; padding: 6px;
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); box-shadow: var(--shadow-md);
+    min-width: 180px; opacity: 0; transform: translateY(-6px) scale(0.98);
+    visibility: hidden; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility var(--dur);
+  }
+  .lang-menu.open { opacity: 1; transform: none; visibility: visible; }
+  .lang-menu li a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--color-text);
+  }
+  .lang-menu li a:hover { background: var(--color-bg); }
+  .lang-menu li a[aria-current="page"] { color: var(--color-primary); font-weight: 600; }
+
+  .header-cta { display: none; }
+  @media (min-width: 720px) { .header-cta { display: inline-flex; } }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-lang-toggle]');
+  const menu = document.querySelector<HTMLUListElement>('[data-lang-menu]');
+  if (toggle && menu) {
+    const close = () => { menu.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); };
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = menu.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', (e) => {
+      if (!(e.target as HTMLElement).closest('.lang-switch')) close();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  }
+</script>

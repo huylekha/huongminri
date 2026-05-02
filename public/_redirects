@@ -1,0 +1,7 @@
+# Cloudflare Pages redirects — graceful locale fallbacks
+/vi  /vi/  301
+/en  /en/  301
+/zh  /zh/  301
+/ko  /ko/  301
+/de  /de/  301
+/fr  /fr/  301
