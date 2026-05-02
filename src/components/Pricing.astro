@@ -33,12 +33,12 @@ const badgeFor = (s: Service): { cls: string; label: string } | null => {
     </div>
 
     <!-- Tab toggle -->
-    <div class="tabs" role="tablist" aria-label="Service groups">
-      <button role="tab" class="tab tab-active" data-tab="herbal_spa" aria-selected="true" id="tab-spa" aria-controls="panel-spa">
-        {t(lang, 'pricing.tab.spa')}
+    <div class="tabs" role="tablist" aria-label="Service groups" data-active="herbal_spa">
+      <button role="tab" class="tab tab-active" data-tab="herbal_spa" aria-selected="true" id="tab-spa" aria-controls="panel-spa" type="button">
+        🌿 {t(lang, 'pricing.tab.spa')}
       </button>
-      <button role="tab" class="tab" data-tab="nail_services" aria-selected="false" id="tab-nail" aria-controls="panel-nail">
-        {t(lang, 'pricing.tab.nail')}
+      <button role="tab" class="tab" data-tab="nail_services" aria-selected="false" id="tab-nail" aria-controls="panel-nail" type="button">
+        💅 {t(lang, 'pricing.tab.nail')}
       </button>
       <span class="tab-indicator" aria-hidden="true"></span>
     </div>
@@ -166,17 +166,34 @@ const badgeFor = (s: Service): { cls: string; label: string } | null => {
     padding: 6px;
     width: fit-content;
     left: 50%; transform: translateX(-50%);
+    box-shadow: var(--shadow-sm);
   }
   .tab {
     position: relative; z-index: 2;
-    padding: 12px 22px;
+    padding: 12px 24px;
     border-radius: var(--radius-pill);
     font-weight: 600; font-size: 0.95rem;
     color: var(--color-text-soft);
-    transition: color var(--dur) var(--ease);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all var(--dur) var(--ease);
     white-space: nowrap;
+    min-width: 120px;
+    text-align: center;
   }
-  .tab-active { color: #fff; }
+  .tab:hover:not(.tab-active) { 
+    color: var(--color-text); 
+    background: rgba(107, 142, 35, 0.1);
+  }
+  .tab:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  .tab-active { 
+    color: #fff !important; 
+    background: transparent;
+  }
   .tab-indicator {
     position: absolute; top: 6px; left: 6px; bottom: 6px;
     width: calc(50% - 6px);
@@ -186,7 +203,26 @@ const badgeFor = (s: Service): { cls: string; label: string } | null => {
     transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
     z-index: 1;
   }
-  .tabs[data-active="nail_services"] .tab-indicator { transform: translateX(100%); background: var(--color-accent); }
+  .tabs[data-active="nail_services"] .tab-indicator { 
+    transform: translateX(100%); 
+    background: var(--color-accent); 
+  }
+
+  /* Mobile responsive tabs */
+  @media (max-width: 480px) {
+    .tabs {
+      width: 100%;
+      max-width: 320px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .tab {
+      flex: 1;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      min-width: auto;
+    }
+  }
 
   /* ============ PANELS ============ */
   .panel { animation: fadeUp var(--dur-slow) var(--ease) both; }
@@ -355,21 +391,51 @@ const badgeFor = (s: Service): { cls: string; label: string } | null => {
   const tabsRoot = document.querySelector<HTMLElement>('.tabs');
   const panels = document.querySelectorAll<HTMLElement>('.panel');
 
-  tabs.forEach((btn) => {
-    btn.addEventListener('click', () => {
+  tabs.forEach((btn, index) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
       const target = btn.dataset.tab;
       if (!target || !tabsRoot) return;
+      
+      // Update button states
       tabs.forEach((b) => {
         const isActive = b === btn;
         b.classList.toggle('tab-active', isActive);
         b.setAttribute('aria-selected', String(isActive));
+        b.setAttribute('tabindex', isActive ? '0' : '-1');
       });
+      
+      // Update tabs root
       tabsRoot.dataset.active = target;
+      
+      // Update panels
       panels.forEach((p) => {
         const match = p.dataset.panel === target;
         p.hidden = !match;
         p.classList.toggle('panel-active', match);
       });
+    });
+    
+    // Keyboard navigation
+    btn.addEventListener('keydown', (e) => {
+      let targetIndex = -1;
+      
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        targetIndex = index === 0 ? tabs.length - 1 : index - 1;
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        targetIndex = index === tabs.length - 1 ? 0 : index + 1;
+      } else if (e.key === 'Home') {
+        targetIndex = 0;
+      } else if (e.key === 'End') {
+        targetIndex = tabs.length - 1;
+      }
+      
+      if (targetIndex !== -1) {
+        e.preventDefault();
+        tabs[targetIndex].focus();
+        tabs[targetIndex].click();
+      }
     });
   });
 

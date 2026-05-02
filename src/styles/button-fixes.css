@@ -1,0 +1,139 @@
+/* 
+ * Button Fixes for HuongMinri Spa
+ * Ensures buttons work across all browsers and devices
+ */
+
+/* Reset button styles to prevent browser defaults */
+button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Fix for iOS Safari button styling */
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* Ensure buttons are tappable on touch devices */
+button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Tab button specific fixes */
+.tab {
+  /* Ensure proper stacking context */
+  position: relative;
+  z-index: 2;
+  
+  /* Text rendering optimization */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Prevent text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* Ensure proper box model */
+  box-sizing: border-box;
+}
+
+/* Fix for high DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  .tab {
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+/* Accessibility: High contrast mode support */
+@media (prefers-contrast: high) {
+  .tab {
+    border: 2px solid currentColor;
+  }
+  
+  .tab-active {
+    background: currentColor;
+    color: var(--color-bg) !important;
+  }
+}
+
+/* Fix for reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .tab,
+  .tab-indicator,
+  .btn {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* Dark mode support (future-proofing) */
+@media (prefers-color-scheme: dark) {
+  .tabs {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Fix for very small screens */
+@media (max-width: 320px) {
+  .tabs {
+    width: calc(100% - 32px);
+    margin-left: 16px;
+    margin-right: 16px;
+    left: 0;
+    transform: none;
+  }
+  
+  .tab {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
+}
+
+/* Ensure proper focus styles for keyboard navigation */
+.tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-pill);
+}
+
+/* Fix for browsers that don't support :focus-visible */
+.tab:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Loading state for buttons */
+.btn:disabled,
+.tab:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Animation performance optimization */
+.tab-indicator {
+  will-change: transform, background-color;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Fix for Safari transform issues */
+@supports (-webkit-backdrop-filter: blur(1px)) {
+  .tabs {
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+}
